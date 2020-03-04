@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/kapy90/App.git</RepositoryUrl>
+    <RepositoryType>https</RepositoryType>
+    <Description>Library</Description>
+    <PackageId>App.net.core</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
