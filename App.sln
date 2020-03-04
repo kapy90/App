@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App", "App\App.csproj", "{D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.EntityFramework", "App.EntityFramework\App.EntityFramework.csproj", "{66385298-E286-4E2E-AA24-D653DB1AA30F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Swagger", "App.Swagger\App.Swagger.csproj", "{8379A9ED-7EDA-4119-AE08-0F82DBF2CDDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{66385298-E286-4E2E-AA24-D653DB1AA30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66385298-E286-4E2E-AA24-D653DB1AA30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66385298-E286-4E2E-AA24-D653DB1AA30F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8379A9ED-7EDA-4119-AE08-0F82DBF2CDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8379A9ED-7EDA-4119-AE08-0F82DBF2CDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8379A9ED-7EDA-4119-AE08-0F82DBF2CDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8379A9ED-7EDA-4119-AE08-0F82DBF2CDDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
