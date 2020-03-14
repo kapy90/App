@@ -6,11 +6,11 @@ namespace App.Domain.Entities.Auditing
 	[Serializable]
 	public abstract class DeletionAudited<TPrimaryKey, TUser> : Entity<TPrimaryKey>, IDeletionAudited<TUser>, IDeletionAudited, IDeletionTime where TUser : IEntity<long>
 	{
-		public virtual DateTime DeletionTime
+		public virtual DateTime? DeletionTime
 		{
 			get;
 			set;
-		} = DateTime.Now;
+		}
 
 
 		public bool IsDeleted
