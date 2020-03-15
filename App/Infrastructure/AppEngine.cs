@@ -125,20 +125,25 @@ namespace App.Infrastructure
 
 		protected virtual void AddAutoMapper(IServiceCollection services, ITypeFinder typeFinder)
 		{
-			//IL_0067: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0071: Expected O, but got Unknown
-			IEnumerable<Type> mapperConfigurations = typeFinder.FindClassesOfType<IOrderedMapperProfile>();
-			IOrderedEnumerable<IOrderedMapperProfile> instances = from mapperConfiguration in mapperConfigurations
-																  select (IOrderedMapperProfile)Activator.CreateInstance(mapperConfiguration) into mapperConfiguration
-																  orderby mapperConfiguration.Order
-																  select mapperConfiguration;
-			AutoMapperConfiguration.Init((MapperConfiguration)(object)new MapperConfiguration((Action<IMapperConfigurationExpression>)delegate (IMapperConfigurationExpression cfg)
+			//find mapper configurations provided by other assemblies
+			var mapperConfigurations = typeFinder.FindClassesOfType<IOrderedMapperProfile>();
+
+			//create and sort instances of mapper configurations
+			var instances = mapperConfigurations
+				.Select(mapperConfiguration => (IOrderedMapperProfile)Activator.CreateInstance(mapperConfiguration))
+				.OrderBy(mapperConfiguration => mapperConfiguration.Order);
+
+			//create AutoMapper configuration
+			var config = new MapperConfiguration(cfg =>
 			{
-				foreach (IOrderedMapperProfile current in instances)
+				foreach (var instance in instances)
 				{
-					cfg.AddProfile(current.GetType());
+					cfg.AddProfile(instance.GetType());
 				}
-			}));
+			});
+
+			//register
+			AutoMapperConfiguration.Init(config);
 		}
 
 		private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
