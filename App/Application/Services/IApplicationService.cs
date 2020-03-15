@@ -2,7 +2,7 @@
 
 namespace App.Application.Services
 {
-    public interface IApplicationService : ITransientDependency
+    public interface IApplicationService : IScopedDependency
     {
     }
 }
