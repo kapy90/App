@@ -24,5 +24,11 @@ namespace App.Extensions.OrderByExtensions
             return desc ? Queryable.OrderByDescending(queryable, keySelector) : Queryable.OrderBy(queryable, keySelector);
         }
 
+        public static IQueryable<TSource> OrderBy<TSource, Tkey>(this IQueryable<TSource> sources, Expression<Func<TSource, Tkey>> keySelector, bool desc)
+        {
+            var groupedOrderBy = desc ? Queryable.OrderByDescending(sources, keySelector) : Queryable.OrderBy(sources, keySelector);
+            return groupedOrderBy.AsQueryable();
+        }
+
     }
 }
