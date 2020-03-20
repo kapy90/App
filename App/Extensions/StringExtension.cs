@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace App.Extensions
+namespace App.Extensions.StringExtensions
 {
-	public static class StringExtensions
+	public static class StringExtension
 	{
 		public static string EnsureEndsWith(this string str, char c)
 		{
