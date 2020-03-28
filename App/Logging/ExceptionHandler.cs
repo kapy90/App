@@ -6,11 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using App.Extensions.HttpRequestExtensions;
 
 namespace App.Logging
 {
 	public class ExceptionHandler
 	{
+
+
 		public static async Task Invoke(HttpContext context)
 		{
 			Exception exception = context.Features.Get<IExceptionHandlerPathFeature>()?.Error;
@@ -27,18 +30,20 @@ namespace App.Logging
 				statusCode = 400;
 			}
 			context.RequestServices.GetService<IExceptionLog>().Invoke(exception, statusCode);
+
+			context.Response.ContentType = "text/plain; charset=utf-8";
 			if (exception is UserFriendlyException)
 			{
 				UserFriendlyException userFriendlyException = exception as UserFriendlyException;
 				context.Response.StatusCode = 400;
-				context.Response.ContentType = "text/plain; charset=utf-8";
 				await context.Response.WriteAsync(userFriendlyException.Message);
 			}
 			else
 			{
 				context.Response.StatusCode = 500;
-				await context.Response.WriteAsync("服务器内部错误", Encoding.GetEncoding("GB2312"));
+				await context.Response.WriteAsync("服务器内部错误");
 			}
+
 		}
 	}
 }

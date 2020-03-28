@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace App.EntityFramework
 {
@@ -160,6 +161,19 @@ namespace App.EntityFramework
             try
             {
                 this._context.SaveChanges();
+            }
+            catch (Exception dbEx)
+            {
+                throw dbEx;
+            }
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            try
+            {
+               var res = await this._context.SaveChangesAsync();
+               return res;
             }
             catch (Exception dbEx)
             {
