@@ -64,13 +64,39 @@ namespace App.Infrastructure
 		{
 			if (implementType.GetInterfaces().Contains<Type>(typeof(IApplicationService)))
 			{
-				Type appServiceInterFace = (from f in implementType.GetInterfaces()
-											where !f.Equals(typeof(IApplicationService))
-											where !f.Equals(typeof(TLifeTime))
-											select f).FirstOrDefault();
-				if (appServiceInterFace != null && appServiceInterFace.Name.EndsWith("AppService"))
+				var appServiceInterFace = implementType.GetInterfaces()
+							.Where(x => !x.Equals(typeof(IApplicationService)))
+							.Where(x => !x.Equals(typeof(TLifeTime)))
+							.Where(x => x.Name.EndsWith("AppService")).FirstOrDefault();
+
+				if (appServiceInterFace != null)
 				{
-					RigisterService(services, implementType, appServiceInterFace);
+					var dependencis = implementType.GetInterfaces()
+							.Where(x => !x.Equals(typeof(IApplicationService)))
+							.Where(x => !x.Equals(typeof(TLifeTime)))
+							.Where(x => !x.Equals(typeof(ITransientDependency)))
+							.Where(x => x.Name.EndsWith("Dependency")).ToList();
+
+					if (dependencis.Count > 0)
+					{
+						var appService = services.BuildServiceProvider().GetService(appServiceInterFace);
+						if(appService == null)
+						{
+							var dependency = dependencis.FirstOrDefault();
+							if (dependency.Equals(typeof(IScopedDependency)))
+							{
+								services.AddScoped(appServiceInterFace, implementType);
+							}
+							else if (dependency.Equals(typeof(ISingletonDependency)))
+							{
+								services.AddSingleton(appServiceInterFace, implementType);
+							}
+						}
+					}
+					else
+					{
+						RigisterService(services, implementType, appServiceInterFace);
+					}
 				}
 			}
 			else if (implementType.GetInterfaces().Contains<Type>(typeof(IExceptionLog)))
