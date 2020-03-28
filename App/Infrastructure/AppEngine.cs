@@ -82,7 +82,16 @@ namespace App.Infrastructure
 			}
 			else
 			{
-				RigisterService(services, implementType);
+				var serviceInterFace = implementType.GetInterfaces().Where(x=>!x.Equals(typeof(TLifeTime)))
+							.Where(x=>x.Name.EndsWith(implementType.Name)).FirstOrDefault();
+				if(serviceInterFace == null)
+				{
+					RigisterService(services, implementType);
+				}
+				else
+				{
+					RigisterService(services, implementType, serviceInterFace);
+				}
 			}
 		}
 
