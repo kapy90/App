@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace App.EntityFramework
 {
@@ -58,6 +59,8 @@ namespace App.EntityFramework
         /// Save changes of entity
         /// </summary>
         void SaveChanges();
+
+        Task<int> SaveChangesAsync();
 
         #endregion
 
