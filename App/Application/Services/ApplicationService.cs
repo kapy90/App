@@ -6,10 +6,10 @@ using System.Text;
 
 namespace App.Application.Services
 {
-    public abstract class BaseApplicationService : IApplicationService
+    public abstract class ApplicationService : IApplicationService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public BaseApplicationService()
+        public ApplicationService()
         {
             _httpContextAccessor = Infrastructure.EngineContext.Current.Resolve<IHttpContextAccessor>();
         }

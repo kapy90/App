@@ -1,6 +1,7 @@
 ﻿using App;
 using App.Application.Services;
 using App.Dependency;
+using App.Domain.Services;
 using App.Infrastructure.Mapper;
 using App.Logging;
 using AutoMapper;
@@ -60,44 +61,54 @@ namespace App.Infrastructure
 			_serviceProvider = services.BuildServiceProvider();
 		}
 
-		private void RigisterFactory<TLifeTime>(IServiceCollection services, Type implementType)
+		private void RigistInternalService<TLifeTime, TInternalService>(IServiceCollection services, Type implementType, Func<Type, bool> derivedCondition)
 		{
-			if (implementType.GetInterfaces().Contains<Type>(typeof(IApplicationService)))
+			var domainServiceInterFace = implementType.GetInterfaces()
+							.Where(x => !x.Equals(typeof(TInternalService)))
+							.Where(x => !x.Equals(typeof(TLifeTime)))
+							.Where(derivedCondition).FirstOrDefault();
+
+			if (domainServiceInterFace != null)
 			{
-				var appServiceInterFace = implementType.GetInterfaces()
-							.Where(x => !x.Equals(typeof(IApplicationService)))
-							.Where(x => !x.Equals(typeof(TLifeTime)))
-							.Where(x => x.Name.EndsWith("AppService")).FirstOrDefault();
+				var dependencis = implementType.GetInterfaces()
+						.Where(x => !x.Equals(typeof(TInternalService)))
+						.Where(x => !x.Equals(typeof(TLifeTime)))
+						.Where(x => !x.Equals(typeof(ITransientDependency)))
+						.Where(x => x.Name.EndsWith("Dependency")).ToList();
 
-				if (appServiceInterFace != null)
+				if (dependencis.Count > 0)
 				{
-					var dependencis = implementType.GetInterfaces()
-							.Where(x => !x.Equals(typeof(IApplicationService)))
-							.Where(x => !x.Equals(typeof(TLifeTime)))
-							.Where(x => !x.Equals(typeof(ITransientDependency)))
-							.Where(x => x.Name.EndsWith("Dependency")).ToList();
-
-					if (dependencis.Count > 0)
+					var appService = services.BuildServiceProvider().GetService(domainServiceInterFace);
+					if (appService == null)
 					{
-						var appService = services.BuildServiceProvider().GetService(appServiceInterFace);
-						if(appService == null)
+						var dependency = dependencis.FirstOrDefault();
+						if (dependency.Equals(typeof(IScopedDependency)))
 						{
-							var dependency = dependencis.FirstOrDefault();
-							if (dependency.Equals(typeof(IScopedDependency)))
-							{
-								services.AddScoped(appServiceInterFace, implementType);
-							}
-							else if (dependency.Equals(typeof(ISingletonDependency)))
-							{
-								services.AddSingleton(appServiceInterFace, implementType);
-							}
+							services.AddScoped(domainServiceInterFace, implementType);
+						}
+						else if (dependency.Equals(typeof(ISingletonDependency)))
+						{
+							services.AddSingleton(domainServiceInterFace, implementType);
 						}
 					}
-					else
-					{
-						RigisterService(services, implementType, appServiceInterFace);
-					}
 				}
+				else
+				{
+					RigisterService(services, implementType, domainServiceInterFace);
+				}
+			}
+		}
+
+		private void RigisterFactory<TLifeTime>(IServiceCollection services, Type implementType)
+		{
+			if (implementType.GetInterfaces().Contains<Type>(typeof(IDomainService)))
+			{
+				this.RigistInternalService<TLifeTime,IDomainService>(services, implementType, (x) => x.Name.EndsWith("Manager") ||
+					x.Name.EndsWith("Service") || x.Name.EndsWith("DomainService"));
+			}
+			else if (implementType.GetInterfaces().Contains<Type>(typeof(IApplicationService)))
+			{
+				this.RigistInternalService<TLifeTime, IApplicationService>(services, implementType, (x) => x.Name.EndsWith("AppService"));
 			}
 			else if (implementType.GetInterfaces().Contains<Type>(typeof(IExceptionLog)))
 			{
