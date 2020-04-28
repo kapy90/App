@@ -25,13 +25,6 @@ namespace App.Domain.Entities.Role
 			set;
 		}
 
-		public virtual MenuType MType
-		{
-			get;
-			set;
-		} = MenuType.vertical;
-
-
 		public virtual long ParentId
 		{
 			get;
