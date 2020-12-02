@@ -20,7 +20,6 @@ namespace App.Domain.Entities.Auditing
 			set;
 		}
 
-		[ForeignKey("CreatorUserId")]
 		public virtual TUser CreatorUser
 		{
 			get;

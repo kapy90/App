@@ -25,7 +25,6 @@ namespace App.Domain.Entities.Auditing
 			set;
 		}
 
-		[ForeignKey("DeleterUserId")]
 		public virtual TUser DeleterUser
 		{
 			get;
